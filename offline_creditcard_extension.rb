@@ -5,31 +5,28 @@ class OfflineCreditcardExtension < Spree::Extension
   version "1.0"
   description "Describe your extension here"
   url "http://yourwebsite.com/offline_creditcard"
-
-  # define_routes do |map|
-  #   map.namespace :admin do |admin|
-  #     admin.resources :whatever
-  #   end  
-  # end
   
   def activate    
-    # credit card numbers should always be stored in the case of offline processing (no other option makes sense)
-    #Spree::Config.set(:store_cc => true) 
-    
-    CreditcardPayment.class_eval do 
+
+    Creditcard.class_eval do
       require 'openssl'
       require 'base64'
       
-      # override the number attribute so we can encrypt it before its stored
-      def number=(number)
-        public_key = cache.fetch('public_key') do
-          # TODO - remove hard code of filename
-          OpenSSL::PKey::RSA.new(File.read("public.pem"))  
+      private
+
+      # overrides filter_sensitive to make sure the stored values are encrypted.
+      def filter_sensitive
+        public_key_text = Rails.cache.fetch('public_key') do
+          OpenSSL::PKey::RSA.new(File.read("public.pem")).to_s
         end
-        encrypted_number = Base64.encode64(public_key.public_encrypt(number))        
+        public_key = OpenSSL::PKey::RSA.new(public_key_text)
+        encrypted_number = Base64.encode64(public_key.public_encrypt(number)).gsub("\n","")
+        encrypted_cvv = Base64.encode64(public_key.public_encrypt(verification_value)).gsub("\n","")
         self[:number] = encrypted_number
+        self[:verification_value] = encrypted_cvv
       end
     end
+
   end
   
   def deactivate
