@@ -1,0 +1,43 @@
+GnuPG
+=============
+	A Command-line wrapper for GnuPG in ruby/rails. The secret decryption key only occupies the working directory for the duration of the decryption.
+	
+ Requirements:
+	GnuPG installed on your box
+	A working directory with the public key installed
+	An ascii-export of your secret key, for dynamic loading/unloading of the decryption key
+	
+
+ Usage:
+	For Rails, you'll definitely want to set the absolute paths,
+	using RAILS_ROOT/path/to/your/working/directory
+
+	Assuming these options..
+	workdir = /tmp/gnupg_test/
+	passphrase = uglydonkeys
+	
+
+	gnupg = GnuPG.new 	:binary=>"/opt/local/bin/gpg",
+						:workdir=>"/tmp/gnupg_test",
+						:homedir_pub=>"/tmp/gnupg_test",
+						:homedir_sec=>"/tmp/gnupg_test",
+						:recipient=>"your uid"
+	
+	puts plain_message = "no more saddam, haha"
+	puts encrypted_message = gnupg.encrypt(plain_message)
+	
+	#	Load ascii decryption sec key, wherever you may have it
+	gnupg.load_key File.read("secret_key.asc")
+	puts gnupg.decrypt(encrypted_message,'uglydonkeys') 
+	gnupg.drop_key
+	
+	Thats it! You can, of course, store whatever you want to files, or to the database.
+	
+	
+Author:
+	Michael Cerna
+	cerna5150@yahoo.com
+	http://www.ahgsoftware.com
+	AHG Software
+	Antioch, Il USA
+   

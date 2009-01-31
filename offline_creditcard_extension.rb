@@ -2,7 +2,7 @@
 # require_dependency 'application'
 
 class OfflineCreditcardExtension < Spree::Extension
-  version "1.0"
+  version "0.6.0"
   description "Describe your extension here"
   url "http://yourwebsite.com/offline_creditcard"
 
@@ -16,18 +16,22 @@ class OfflineCreditcardExtension < Spree::Extension
     # credit card numbers should always be stored in the case of offline processing (no other option makes sense)
     #Spree::Config.set(:store_cc => true) 
     
-    CreditcardPayment.class_eval do 
+    Creditcard.class_eval do 
       require 'openssl'
       require 'base64'
       
-      # override the number attribute so we can encrypt it before its stored
-      def number=(number)
-        public_key = cache.fetch('public_key') do
-          # TODO - remove hard code of filename
-          OpenSSL::PKey::RSA.new(File.read("public.pem"))  
+      # overrides filter_sensitive to make sure the stored values are encrypted.
+      private
+      def filter_sensitive
+        gnupg = GnuPG.new :recipient => Spree::Pgp::Config[:email]
+        public_key_text = Rails.cache.fetch('public_key') do
+          File.read("#{RAILS_ROOT}/#{Spree::Pgp::Config[:public_key]}")
         end
-        encrypted_number = Base64.encode64(public_key.public_encrypt(number))        
-        self[:number] = encrypted_number
+        gnupg.load_public_key public_key_text        
+        text = "Number: #{number}    Code: #{verification_value}"
+        self[:encrypted_text] = gnupg.encrypt(text)
+        self[:number] = ""
+        self[:verification_value] = ""
       end
     end
   end
