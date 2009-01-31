@@ -1,0 +1,21 @@
+<%= render :partial => 'shared/order_tabs', :locals => {:current => "Credit Cards"} %>
+<table class="admin-report">
+  <tr>
+    <th><%= t('cc_number') %></th>
+    <th><%= t('type') %></th>
+    <th><%= t('expiration') %></th>
+    <th><%= t('name') %></th>   
+    <th><%= t('action') %></th>    
+  </tr>
+  <% @creditcards.each do |creditcard| %>
+    <tr>
+			<td><%= creditcard.display_number %></td>
+			<td><%= creditcard.cc_type.titleize %></td>
+			<td><%= "#{creditcard.month}/#{creditcard.year}" %></td>
+			<td><%= "#{creditcard.first_name} #{creditcard.last_name}" %></td>
+			<td><%= link_to "Show", admin_order_creditcard_url(@order, creditcard) %></td>
+    </tr>
+  <% end %>
+</table>
+
+<%= link_to t("new_credit_card"), new_admin_order_creditcard_url(@order) %>

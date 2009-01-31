@@ -34,6 +34,18 @@ class OfflineCreditcardExtension < Spree::Extension
         self[:verification_value] = ""
       end
     end
+    
+    # register Creditcards tab
+    Admin::BaseController.class_eval do
+      before_filter :add_creditcard_tab
+
+      private
+      def add_creditcard_tab
+        @order_admin_tabs ||= []
+        @order_admin_tabs << {:name => t('credit_cards'), :url => "admin_order_creditcards_url"}  
+      end
+    end    
+    
   end
   
   def deactivate
