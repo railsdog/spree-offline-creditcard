@@ -14,6 +14,9 @@
   </tr>
 </table>
 <br/>
+<b><%=t('billing_address')%>: </b><br/>
+<%= render :partial => 'shared/address', :locals => {:address => @creditcard.address} %>
+<br/>
 <b>Credit Card Info: </b><br/>
 <%= @creditcard.encrypted_text.to_s %><br/>
 <br/>

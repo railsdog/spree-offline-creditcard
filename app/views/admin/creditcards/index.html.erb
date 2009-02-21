@@ -13,7 +13,10 @@
 			<td><%= creditcard.cc_type.titleize %></td>
 			<td><%= "#{creditcard.month}/#{creditcard.year}" %></td>
 			<td><%= "#{creditcard.first_name} #{creditcard.last_name}" %></td>
-			<td><%= link_to "Show", admin_order_creditcard_url(@order, creditcard) %></td>
+			<td>
+			  <%= link_to t('show'), admin_order_creditcard_url(@order, creditcard) %>
+			  <%= link_to t('edit'), edit_admin_order_creditcard_url(@order, creditcard) %>
+			</td>
     </tr>
   <% end %>
 </table>

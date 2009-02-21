@@ -22,6 +22,25 @@ class Admin::CreditcardsController < Admin::BaseController
 
     flash[:notice] = t("credit_card_added.")
     redirect_to collection_url
+  end   
+  
+  def edit               
+    load_object
+    @creditcard_presenter = CreditcardPresenter.new(:creditcard => @creditcard, :address => @creditcard.address)
+  end  
+  
+  def update
+    @creditcard_presenter = CreditcardPresenter.new(params[:creditcard_presenter])   
+    @creditcard.address.destroy
+    @creditcard.address = @creditcard_presenter.address
+    @creditcard.save
+    
+    flash[:notice] = t("credit_card_updated")
+    redirect_to object_url
+  end  
+
+  def country_changed
+    render :partial => "shared/states", :locals => {:presenter_type => "creditcard"}
   end
   
   private

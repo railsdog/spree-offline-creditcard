@@ -1,0 +1,18 @@
+<%= render :partial => 'shared/order_tabs', :locals => {:current => "Credit Cards"} %>
+<br/>
+<h1><%= t("editing_credit_card")%></h1>
+<br/>
+<%= error_messages_for :creditcard_presenter %>
+
+<% form_for(:creditcard_presenter, :url => object_url, :html => { :method => :put }) do |f| %>
+  <table cellpadding="5" width="100%">
+    <tr>
+      <td>
+  			<h4><%= t("billing_address")%></h4>
+  			<%= render :partial => 'shared/form_address', :locals => {:f => f, :presenter_type => "creditcard"} %>
+      </td>
+    </tr>
+  </table>
+  <br/>
+  <%= submit_tag "Update" %> or <%= link_to "Cancel", object_url %>
+<% end %>

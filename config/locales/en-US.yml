@@ -2,6 +2,9 @@
 en-US: 
   cc_number: Number
   credit_cards: Credit Cards
-  credit_card_added: Credit Card Added.
+  credit_card_added: Credit Card Added
+  credit_card_updated: Credit Card Updated
+  editing_credit_card: Editing Credit Card
   expiration: Expiration
   new_credit_card: New Credit Card  
+  show: Show
