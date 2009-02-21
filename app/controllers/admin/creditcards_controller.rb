@@ -33,7 +33,7 @@ class Admin::CreditcardsController < Admin::BaseController
     @creditcard_presenter = CreditcardPresenter.new(params[:creditcard_presenter])   
     @creditcard.address.destroy
     @creditcard.address = @creditcard_presenter.address
-    @creditcard.save
+    @creditcard.address.save
     
     flash[:notice] = t("credit_card_updated")
     redirect_to object_url
