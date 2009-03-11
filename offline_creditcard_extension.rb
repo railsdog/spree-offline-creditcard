@@ -22,7 +22,9 @@ class OfflineCreditcardExtension < Spree::Extension
       
       # overrides filter_sensitive to make sure the stored values are encrypted.
       private
-      def filter_sensitive
+      def filter_sensitive                 
+        # don't encrypt again, this way we can clone an order and its creditcard and keep text encrypted
+        return unless encrypted_text.blank?
         gnupg = GnuPG.new :recipient => Spree::Pgp::Config[:email]
         public_key_text = Rails.cache.fetch('public_key') do
           File.read("#{RAILS_ROOT}/#{Spree::Pgp::Config[:public_key]}")
