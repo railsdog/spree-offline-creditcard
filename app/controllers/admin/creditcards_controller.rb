@@ -53,9 +53,12 @@ class Admin::CreditcardsController < Admin::BaseController
   end
     
   def load_data 
-    load_object    
+    load_object         
+
     @selected_country_id = params[:creditcard_presenter][:address_country_id].to_i if params.has_key?('creditcard_presenter')
+    @selected_country_id ||= @order.creditcards.last.address.country_id unless @order.nil? or @order.creditcards.empty?
     @selected_country_id ||= Spree::Config[:default_country_id]
+
     @states = State.find_all_by_country_id(@selected_country_id, :order => 'name')  
     @countries = Country.find(:all)
   end
